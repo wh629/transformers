@@ -520,7 +520,8 @@ class WnliProcessor(DataProcessor):
 class BoolqProcessor(DataProcessor):
     """Processor for the BoolQ data set (SuperGLUE version)."""
     
-    def _read_jsl(self, cls, input_file, quotechar=None):
+    @classmethod
+    def _read_jsonl(cls, input_file, quotechar=None):
         """Reads a tab separated value file."""
         with open(input_file, "r", encoding="utf-8-sig") as f:
             return list(json.loads(f, delimiter="\t", quotechar=quotechar))
