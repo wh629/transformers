@@ -520,6 +520,12 @@ class WnliProcessor(DataProcessor):
 class BoolqProcessor(DataProcessor):
     """Processor for the BoolQ data set (SuperGLUE version)."""
     
+    @classmethod
+    def _read_jsl(cls, input_file, quotechar=None):
+        """Reads a tab separated value file."""
+        with open(input_file, "r", encoding="utf-8-sig") as f:
+            return list(json.loads(f, delimiter="\t", quotechar=quotechar))
+    
     def get_example_from_tensor_dict(self, tensor_dict):
         """Gets an example from a dict with tensorflow tensors
         Args:
@@ -557,12 +563,6 @@ class BoolqProcessor(DataProcessor):
             label = line[-1]
             examples.append(InputExample(guid=guid, text_a=text_a, text_b=text_b, label=label))
         return examples
-    
-    @classmethod
-    def _read_jsl(cls, input_file, quotechar=None):
-        """Reads a tab separated value file."""
-        with open(input_file, "r", encoding="utf-8-sig") as f:
-            return list(json.loads(f, delimiter="\t", quotechar=quotechar))
 
 glue_tasks_num_labels = {
     "cola": 2,
