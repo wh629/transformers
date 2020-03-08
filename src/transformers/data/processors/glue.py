@@ -549,7 +549,7 @@ class BoolqProcessor(DataProcessor):
 
     def get_dev_examples(self, data_dir):
         """Gets a collection of `InputExample`s for the dev set."""
-        return self._create_examples(self._read_jsonl(os.path.join(data_dir, "dev.jsonl")), "dev")
+        return self._create_examples(self._read_jsonl(os.path.join(data_dir, "val.jsonl")), "dev")
 
     def get_labels(self):
         """Gets the list of labels for this data set."""
