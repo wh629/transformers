@@ -527,7 +527,6 @@ class BoolqProcessor(DataProcessor):
         with open(input_file, "r", encoding="utf-8-sig") as f:        
             for line in f:
                 temp_json = list(json.loads(line).values())
-                print(temp_json)
                 result.append(temp_json)
             return result
     
