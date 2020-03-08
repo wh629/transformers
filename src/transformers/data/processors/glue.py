@@ -554,7 +554,7 @@ class BoolqProcessor(DataProcessor):
 
     def get_labels(self):
         """Gets the list of labels for this data set."""
-        return ["true","false"]
+        return [True,False]
         
     def _create_examples(self, lines, set_type):
         """Creates examples for the training and dev sets."""
