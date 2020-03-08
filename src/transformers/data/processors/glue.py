@@ -523,8 +523,13 @@ class BoolqProcessor(DataProcessor):
     @classmethod
     def _read_jsonl(cls, input_file, quotechar=None):
         """Reads a tab separated value file."""
-        with open(input_file, "r", encoding="utf-8-sig") as f:
-            return list(json.loads(f, delimiter="\t", quotechar=quotechar))
+        result = []
+        with open(input_file, "r", encoding="utf-8-sig") as f:        
+            for line in f:
+                temp_json = list(json.loads(line).values())
+                print(temp_json)
+                result.append(temp_json)
+            return result
     
     def get_example_from_tensor_dict(self, tensor_dict):
         """Gets an example from a dict with tensorflow tensors
