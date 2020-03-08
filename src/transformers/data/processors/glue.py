@@ -17,6 +17,7 @@
 
 import logging
 import os
+import json
 
 from ...file_utils import is_tf_available
 from .utils import DataProcessor, InputExample, InputFeatures
@@ -515,6 +516,53 @@ class WnliProcessor(DataProcessor):
             examples.append(InputExample(guid=guid, text_a=text_a, text_b=text_b, label=label))
         return examples
 
+#=========== EDIT ===========
+class BoolqProcessor(DataProcessor):
+    """Processor for the BoolQ data set (SuperGLUE version)."""
+    
+    def get_example_from_tensor_dict(self, tensor_dict):
+        """Gets an example from a dict with tensorflow tensors
+        Args:
+            tensor_dict: Keys and values should match the corresponding Glue
+                tensorflow_dataset examples.
+        """
+        return InputExample(
+            tensor_dict["idx"].numpy(),
+            tensor_dict["sentence1"].numpy().decode("utf-8"),
+            tensor_dict["sentence2"].numpy().decode("utf-8"),
+            str(tensor_dict["label"].numpy()),
+        )
+
+    def get_train_examples(self, data_dir):
+        """Gets a collection of `InputExample`s for the train set."""
+        return self._create_examples(self._read_jsonl(os.path.join(data_dir, "train.jsonl")), "train")
+
+    def get_dev_examples(self, data_dir):
+        """Gets a collection of `InputExample`s for the dev set."""
+        return self._create_examples(self._read_jsonl(os.path.join(data_dir, "dev.jsonl")), "dev")
+
+    def get_labels(self):
+        """Gets the list of labels for this data set."""
+        return ["true","false"]
+        
+    def _create_examples(self, lines, set_type):
+        """Creates examples for the training and dev sets."""
+        examples = []
+        for (i, line) in enumerate(lines):
+            if i == 0:
+                continue
+            guid = "%s-%s" % (set_type, line[0])
+            text_a = line[0]
+            text_b = line[1]
+            label = line[-1]
+            examples.append(InputExample(guid=guid, text_a=text_a, text_b=text_b, label=label))
+        return examples
+    
+    @classmethod
+    def _read_jsl(cls, input_file, quotechar=None):
+        """Reads a tab separated value file."""
+        with open(input_file, "r", encoding="utf-8-sig") as f:
+            return list(json.loads(f, delimiter="\t", quotechar=quotechar))
 
 glue_tasks_num_labels = {
     "cola": 2,
@@ -526,6 +574,8 @@ glue_tasks_num_labels = {
     "qnli": 2,
     "rte": 2,
     "wnli": 2,
+    #=========== EDIT ===========
+    "boolq": 2,
 }
 
 glue_processors = {
@@ -539,6 +589,8 @@ glue_processors = {
     "qnli": QnliProcessor,
     "rte": RteProcessor,
     "wnli": WnliProcessor,
+    #=========== EDIT ===========
+    "boolq": BoolqProcessor,
 }
 
 glue_output_modes = {
@@ -552,4 +604,6 @@ glue_output_modes = {
     "qnli": "classification",
     "rte": "classification",
     "wnli": "classification",
+    #=========== EDIT ===========
+    "boolq": "classification",
 }
